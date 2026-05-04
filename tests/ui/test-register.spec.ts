@@ -11,12 +11,13 @@ let user: UserProfile;
 const assertHelper = new AssertHelper();
 
 test.describe('Register Tests', () => {
+
   test.beforeEach(async ({ commonPage }) => {
     await commonPage.goto(Constants.REGISTER_URL);
     user = generateUserProfileData();
   });
 
-  test('TC-001: Register with valid data - success', async ({ registerPage }) => {
+  test('TC-001: Register with valid data - success', { tag: '@smoke @regression' }, async ({ registerPage }) => {
     await registerPage.fillRegistrationForm(user);
     await registerPage.unSelectNewsletter();
     await registerPage.clickAgreeTermsCheckbox();
@@ -41,7 +42,11 @@ test.describe('Register Tests', () => {
   });
 
   test('TC-003: Register with invalid email format', async ({ commonPage, registerPage, browserName }) => {
+<<<<<<< feature/register-automation
     user.email = "invalid-email-format";
+=======
+    user.email = 'invalid-email-format';
+>>>>>>> main
     await registerPage.fillRegistrationForm(user);
     await registerPage.clickAgreeTermsCheckbox();
     await registerPage.submitRegistrationForm();
@@ -50,6 +55,7 @@ test.describe('Register Tests', () => {
 
     const emailValue = await registerPage.inputEmail.inputValue();
     const validationMessage = await registerPage.getInputValidationMessage(registerPage.inputEmail);
+<<<<<<< feature/register-automation
     Assertions.assertEqual(emailValue, user.email);
     if (browserName === 'chromium') {
       Assertions.assertEqual(validationMessage, `Please include an '@' in the email address. '${emailValue}' is missing an '@'.`);
@@ -58,6 +64,17 @@ test.describe('Register Tests', () => {
     } else if (browserName === 'webkit') {
       Assertions.assertEqual(validationMessage, `Enter an email address`);
     }
+=======
+
+    let expectedMessage = `Please include an '@' in the email address. '${emailValue}' is missing an '@'.`;
+    if (browserName === 'firefox') {
+      expectedMessage = 'Please enter an email address.';
+    } else if (browserName === 'webkit') {
+      expectedMessage = 'Enter an email address';
+    }
+
+    Assertions.assertEqual(validationMessage, expectedMessage);
+>>>>>>> main
   });
 
   test('TC-004: Register with password mismatch', async ({ registerPage }) => {
