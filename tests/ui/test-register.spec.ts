@@ -1,10 +1,10 @@
-import { test } from '../../pages/base-page';
-import { Constants } from '../../utilities/constants';
-import { Assertions } from '../../utilities/assertions';
-import { Messages } from '../../data/messages.data';
-import { UserProfile } from '../../models/user';
-import { generateUserProfileData } from '../../data/user-data';
-import { AssertHelper } from '../../pages/assert-helper-page';
+import { test } from '@pages/base-page';
+import { Constants } from '@utilities/constants';
+import { Assertions } from '@utilities/assertions';
+import { Messages } from '@data/messages.data';
+import { UserProfile } from '@models/user';
+import { generateUserProfileData } from '@data/user-data';
+import { AssertHelper } from '@pages/assert-helper-page';
 
 
 let user: UserProfile;
@@ -41,18 +41,24 @@ test.describe('Register Tests', () => {
     await registerPage.verifyRequiredFieldsErrorMessages();
   });
 
-  test('TC-003: Register with invalid email format', async ({ commonPage, registerPage }) => {
+  test('TC-003: Register with invalid email format', async ({ commonPage, registerPage, browserName }) => {
     user.email = "invalid-email-format";
     await registerPage.fillRegistrationForm(user);
     await registerPage.clickAgreeTermsCheckbox();
     await registerPage.submitRegistrationForm();
-
-    // Verify registration did not succeed (still on register page or shows error)
+    // Verify registration did not succeed
     Assertions.assertEqual(await commonPage.getCurrentUrl(), Constants.REGISTER_URL);
+
     const emailValue = await registerPage.inputEmail.inputValue();
     const validationMessage = await registerPage.getInputValidationMessage(registerPage.inputEmail);
-
-    Assertions.assertEqual(validationMessage, `Please include an '@' in the email address. '${emailValue}' is missing an '@'.`);
+    Assertions.assertEqual(emailValue, user.email);
+    if (browserName === 'chromium') {
+      Assertions.assertEqual(validationMessage, `Please include an '@' in the email address. '${emailValue}' is missing an '@'.`);
+    } else if (browserName === 'firefox') {
+      Assertions.assertEqual(validationMessage, `Please enter an email address.`);
+    } else if (browserName === 'webkit') {
+      Assertions.assertEqual(validationMessage, `Enter an email address`);
+    }
   });
 
   test('TC-004: Register with password mismatch', async ({ registerPage }) => {
