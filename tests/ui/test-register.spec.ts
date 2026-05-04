@@ -42,29 +42,14 @@ test.describe('Register Tests', () => {
   });
 
   test('TC-003: Register with invalid email format', async ({ commonPage, registerPage, browserName }) => {
-<<<<<<< feature/register-automation
-    user.email = "invalid-email-format";
-=======
     user.email = 'invalid-email-format';
->>>>>>> main
     await registerPage.fillRegistrationForm(user);
     await registerPage.clickAgreeTermsCheckbox();
     await registerPage.submitRegistrationForm();
     // Verify registration did not succeed
     Assertions.assertEqual(await commonPage.getCurrentUrl(), Constants.REGISTER_URL);
-
     const emailValue = await registerPage.inputEmail.inputValue();
     const validationMessage = await registerPage.getInputValidationMessage(registerPage.inputEmail);
-<<<<<<< feature/register-automation
-    Assertions.assertEqual(emailValue, user.email);
-    if (browserName === 'chromium') {
-      Assertions.assertEqual(validationMessage, `Please include an '@' in the email address. '${emailValue}' is missing an '@'.`);
-    } else if (browserName === 'firefox') {
-      Assertions.assertEqual(validationMessage, `Please enter an email address.`);
-    } else if (browserName === 'webkit') {
-      Assertions.assertEqual(validationMessage, `Enter an email address`);
-    }
-=======
 
     let expectedMessage = `Please include an '@' in the email address. '${emailValue}' is missing an '@'.`;
     if (browserName === 'firefox') {
@@ -74,7 +59,6 @@ test.describe('Register Tests', () => {
     }
 
     Assertions.assertEqual(validationMessage, expectedMessage);
->>>>>>> main
   });
 
   test('TC-004: Register with password mismatch', async ({ registerPage }) => {
